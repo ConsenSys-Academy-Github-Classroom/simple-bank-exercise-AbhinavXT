@@ -23,7 +23,7 @@ contract SimpleBank {
 
     // Let's make sure everyone knows who owns the bank, yes, fill in the
     // appropriate visilibility keyword
-    address public owner;
+    address public owner = msg.sender;
     
     /* Events - publicize actions to external listeners
      */
@@ -112,5 +112,7 @@ contract SimpleBank {
       balances[msg.sender] -= withdrawAmount;
       
       emit LogWithdrawal(msg.sender, withdrawAmount, balances[msg.sender]);
+
+      return balances[msg.sender];
     }
 }
