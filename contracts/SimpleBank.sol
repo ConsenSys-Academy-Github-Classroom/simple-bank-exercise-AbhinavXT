@@ -108,8 +108,10 @@ contract SimpleBank {
       // 3. Emit the appropriate event for this message
       require(withdrawAmount <= balances[msg.sender], "Not enough balance");
       
+      (bool success, ) = msg.sender.call.value(withdrawAmount)("");
       balances[msg.sender] -= withdrawAmount;
       
+      require(success, "Transfer not successful");
       emit LogWithdrawal(msg.sender, withdrawAmount, balances[msg.sender]);
 
       return balances[msg.sender];
