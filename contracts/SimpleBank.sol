@@ -23,7 +23,11 @@ contract SimpleBank {
 
     // Let's make sure everyone knows who owns the bank, yes, fill in the
     // appropriate visilibility keyword
-    address payable public owner = msg.sender;
+    address public owner;
+
+    constructor() public {
+        owner = msg.sender;
+    }
     
     /* Events - publicize actions to external listeners
      */
@@ -106,14 +110,15 @@ contract SimpleBank {
       // 2. Transfer Eth to the sender and decrement the withdrawal amount from
       //    sender's balance
       // 3. Emit the appropriate event for this message
+      address payable transferAccountAddress = msg.sender;
       require(withdrawAmount <= balances[msg.sender], "Not enough balance");
       
-      (bool success, ) = msg.sender.call.value(withdrawAmount)("");
-      balances[msg.sender] -= withdrawAmount;
+      (bool success, ) = transferAccountAddress.call.value(withdrawAmount)("");
+      balances[transferAccountAddress] -= withdrawAmount;
       
       require(success, "Transfer not successful");
-      emit LogWithdrawal(msg.sender, withdrawAmount, balances[msg.sender]);
+      emit LogWithdrawal(transferAccountAddress, withdrawAmount, balances[transferAccountAddress]);
 
-      return balances[msg.sender];
+      return balances[transferAccountAddress];
     }
 }
